@@ -4,5 +4,6 @@
   "repository": "https://github.com/weppos/brighella",
   "keywords": ["http", "redirect"],
   "env": {
+    "TARGET_URL: ""
   }
 }
