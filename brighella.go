@@ -13,7 +13,6 @@ import (
 
 const (
 	what            = "brighella"
-	dnsPrefix       = "_frame"
 	resolverAddress = "8.8.8.8"
 	resolverPort    = "53"
 )
@@ -63,17 +62,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // Any request that is not for the root path / is automatically redirected
 // to the root with a 302 status code. Only a request to / will enable the iframe.
 func (s *Server) Root(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		s.TemporaryRedirect(w, r, "/")
-	} else {
-		targetURL, err := queryRedirectTarget(r.Host)
-		// An error happened. For now, do not display the full error.
-		if err != nil {
-			http.Error(w, "Unable to find redirect target", http.StatusBadRequest)
-			return
-		}
-		s.MaskedRedirect(w, r, targetURL)
+	targetURL, err := os.Getenv("TARGET_URL")
+	// An error happened. For now, do not display the full error.
+	if err != nil {
+		http.Error(w, "Unable to find redirect target", http.StatusBadRequest)
+		return
 	}
+	s.MaskedRedirect(w, r, targetURL)
 }
 
 func (s *Server) TemporaryRedirect(w http.ResponseWriter, r *http.Request, strURL string) {
@@ -84,39 +79,6 @@ func (s *Server) MaskedRedirect(w http.ResponseWriter, r *http.Request, strURL s
 	w.Header().Set("Content-type", "text/html")
 	t, _ := template.ParseFiles("redirect.tmpl")
 	t.Execute(w, &frame{Src: strURL})
-}
-
-func queryRedirectTarget(host string) (string, error) {
-	targetFqdn := fmt.Sprintf("%s.%s", dnsPrefix, host)
-
-	c := new(dns.Client)
-	m := new(dns.Msg)
-	m.SetQuestion(dns.Fqdn(targetFqdn), dns.TypeTXT)
-	r, _, err := c.Exchange(m, net.JoinHostPort(resolverAddress, resolverPort))
-
-	if err != nil {
-		log.Printf("[%s] Error querying %s: %v", host, targetFqdn, err)
-		return "", err
-	}
-
-	if r.Rcode != dns.RcodeSuccess {
-		err = fmt.Errorf("answer from %s not successful: %v", targetFqdn, dns.RcodeToString[r.Rcode])
-		log.Printf("[%s] Error %s", host, err)
-		return "", err
-	}
-
-	for _, a := range r.Answer {
-		switch rr := a.(type) {
-		case *dns.TXT:
-			log.Printf("[%s] Found redirect target at %s: %v", host, targetFqdn, rr.Txt[0])
-			return rr.Txt[0], nil
-		}
-	}
-
-	err = fmt.Errorf("redirect target not found at %s", targetFqdn)
-	log.Printf("[%s] Error %s", host, err)
-
-	return "", err
 }
 
 type frame struct {
