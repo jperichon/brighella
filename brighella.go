@@ -4,8 +4,6 @@ import (
 	"html/template"
 	"log"
 	"os"
-
-	"github.com/miekg/dns"
 )
 
 const (
