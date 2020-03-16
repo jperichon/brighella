@@ -4,6 +4,8 @@
   "repository": "https://github.com/jperichon/brighella",
   "keywords": ["http", "redirect"],
   "env": {
-    "TARGET_URL: ""
+    "TARGET_URL": {
+      "description": "Target URL for masked redirect"
+    }
   }
 }
