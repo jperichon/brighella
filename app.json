@@ -1,5 +1,5 @@
 {
-  "name": "Brighella URL-masking redirect",
+  "name": "Brighella URL-masking redirect, forked!",
   "description": "A simple URL-masking redirect service built on Go",
   "repository": "https://github.com/jperichon/brighella",
   "keywords": ["http", "redirect"],
