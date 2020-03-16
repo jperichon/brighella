@@ -6,7 +6,7 @@ _Brighella_ is a simple URL-masking redirect service built on Go.
 
 It is designed to be deployed on a PaaS service such as Heroku, and it requires zero configuration. The redirect target is fetched from a specific DNS record attached to the requested host.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/weppos/brighella)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/jperichon/brighella)
 
 [Brighella](https://en.wikipedia.org/wiki/Brighella) is a comic, masked character from the Commedia dell'arte. It's also an Italian carnival mask.
 
