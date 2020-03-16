@@ -1,11 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
-	"net"
-	"net/http"
 	"os"
 
 	"github.com/miekg/dns"
@@ -62,12 +59,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // Any request that is not for the root path / is automatically redirected
 // to the root with a 302 status code. Only a request to / will enable the iframe.
 func (s *Server) Root(w http.ResponseWriter, r *http.Request) {
-	targetURL, err := os.Getenv("TARGET_URL")
-	// An error happened. For now, do not display the full error.
-	if err != nil {
-		http.Error(w, "Unable to find redirect target", http.StatusBadRequest)
-		return
-	}
+	targetURL := os.Getenv("TARGET_URL")
 	s.MaskedRedirect(w, r, targetURL)
 }
 
